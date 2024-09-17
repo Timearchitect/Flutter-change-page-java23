@@ -59,50 +59,97 @@ class _SecondPageState extends State<SecondPage> {
       body: Center(
         // Center is a layout widget. It takes a single child and positions it
         // in the middle of the parent.
-        child: Column(
-          // Column is also a layout widget. It takes a list of children and
-          // arranges them vertically. By default, it sizes itself to fit its
-          // children horizontally, and tries to be as tall as its parent.
-          //
-          // Column has various properties to control how it sizes itself and
-          // how it positions its children. Here we use mainAxisAlignment to
-          // center the children vertically; the main axis here is the vertical
-          // axis because Columns are vertical (the cross axis would be
-          // horizontal).
-          //
-          // TRY THIS: Invoke "debug painting" (choose the "Toggle Debug Paint"
-          // action in the IDE, or press "p" in the console), to see the
-          // wireframe for each widget.
-          mainAxisAlignment:
-              (age >= 18) ? MainAxisAlignment.center : MainAxisAlignment.start,
-          children: <Widget>[
-            const Text(
-              (1 + 1 == 2) ? 'true it is 2' : 'false its not correct',
+        child: Row( mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            SingleChildScrollView(
+              child: Column(  children: [
+                Text("hejsan"),
+                FilledButton(onPressed: null, child: Text("click here")),
+                FilledButton(onPressed: null, child: Text("click here")),
+                FilledButton(onPressed: null, child: Text("click here")),
+                FilledButton(onPressed: null, child: Text("click here")),
+                FilledButton(onPressed: null, child: Text("click here")),
+                FilledButton(onPressed: null, child: Text("click here")),
+                FilledButton(onPressed: null, child: Text("click here")),
+                FilledButton(onPressed: null, child: Text("click here")),
+                FilledButton(onPressed: null, child: Text("click here")),
+                FilledButton(onPressed: null, child: Text("click here")),
+                FilledButton(onPressed: null, child: Text("click here")),
+                FilledButton(onPressed: null, child: Text("click here")),
+                FilledButton(onPressed: null, child: Text("click here")),
+                FilledButton(onPressed: null, child: Text("click here")),
+                FilledButton(onPressed: null, child: Text("click here")),
+                FilledButton(onPressed: null, child: Text("click here")),
+                FilledButton(onPressed: null, child: Text("click here")),
+                FilledButton(onPressed: null, child: Text("click here")),
+                FilledButton(onPressed: null, child: Text("click here")),
+                FilledButton(onPressed: null, child: Text("click here")),
+                FilledButton(onPressed: null, child: Text("click here")),
+                FilledButton(onPressed: null, child: Text("click here")),
+                FilledButton(onPressed: null, child: Text("click here")),
+                FilledButton(onPressed: null, child: Text("click here")),
+                FilledButton(onPressed: null, child: Text("click here")),
+                FilledButton(onPressed: null, child: Text("click here")),
+                FilledButton(onPressed: null, child: Text("click here")),
+                FilledButton(onPressed: null, child: Text("click here")),
+                FilledButton(onPressed: null, child: Text("click here")),
+                FilledButton(onPressed: null, child: Text("click here")),
+                FilledButton(onPressed: null, child: Text("click here")),
+                FilledButton(onPressed: null, child: Text("click here")),
+                FilledButton(onPressed: null, child: Text("click here")),
+                FilledButton(onPressed: null, child: Text("click here")),
+                FilledButton(onPressed: null, child: Text("click here")),
+                FilledButton(onPressed: null, child: Text("click here")),
+              
+              ],),
             ),
-            const Text(
-              'You have pushed the button this many times:',
-            ),
-            const Image(
-              image: NetworkImage(
-                  'https://flutter.github.io/assets-for-api-docs/assets/widgets/owl.jpg'),
-            ),
-            FilledButton.icon(
-              icon: Icon(Icons.add_circle),
-                onPressed: () => {_flutterAppIconsPlugin.setIcon( icon: "favicon.png")},
-                label: Text("SetIcon")),
-            FilledButton(
-                onPressed: () => {
-                      s = "",
-                      Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                              builder: (context) =>
-                                  MyHomePage(title: "hejsan")))
-                    },
-                child: Text("Click here")),
-            Text(
-              '$_counter',
-              style: Theme.of(context).textTheme.headlineMedium,
+            Column(
+              // Column is also a layout widget. It takes a list of children and
+              // arranges them vertically. By default, it sizes itself to fit its
+              // children horizontally, and tries to be as tall as its parent.
+              //
+              // Column has various properties to control how it sizes itself and
+              // how it positions its children. Here we use mainAxisAlignment to
+              // center the children vertically; the main axis here is the vertical
+              // axis because Columns are vertical (the cross axis would be
+              // horizontal).
+              //
+              // TRY THIS: Invoke "debug painting" (choose the "Toggle Debug Paint"
+              // action in the IDE, or press "p" in the console), to see the
+              // wireframe for each widget.
+              mainAxisAlignment:
+                  (age >= 18) ? MainAxisAlignment.center : MainAxisAlignment.start,
+              children: <Widget>[
+                const BackButton(),
+                const Text(
+                  (1 + 1 == 2) ? 'true it is 2' : 'false its not correct',
+                ),
+                const Text(
+                  'You have pushed the button this many times:',
+                ),
+                const Image(
+                  image: NetworkImage(
+                      'https://flutter.github.io/assets-for-api-docs/assets/widgets/owl.jpg'),
+                ),
+                FilledButton.icon(
+                  icon: Icon(Icons.add_circle),
+                    onPressed: () => {_flutterAppIconsPlugin.setIcon( icon: "favicon.png")},
+                    label: Text("SetIcon")),
+                FilledButton(
+                    onPressed: () => {
+                          s = "",
+                          Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                  builder: (context) =>
+                                      MyHomePage(title: "hejsan")))
+                        },
+                    child: Text("Click here")),
+                Text(
+                  '$_counter',
+                  style: Theme.of(context).textTheme.headlineMedium,
+                ),
+              ],
             ),
           ],
         ),
