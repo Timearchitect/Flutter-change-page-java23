@@ -33,6 +33,7 @@ migrate_working_dir/
 !.aab
 !.apk
 /build/
+!build/web
 # Symbolication related
 app.*.symbols
 
