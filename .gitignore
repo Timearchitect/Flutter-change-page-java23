@@ -40,8 +40,7 @@ migrate_working_dir/
 build/*
 !build/web/
 
-build/web/*
-!build/web/gr/
+
 # Symbolication related
 app.*.symbols
 
