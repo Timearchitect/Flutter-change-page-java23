@@ -1,8 +1,42 @@
+import 'package:firebase_core/firebase_core.dart';
+import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:java_flutter/secondPage.dart'; // second page
 
+import 'firebase_options.dart';
+
+/*
 void main() {
+  runApp(const MyApp());
+}
+*/
+
+Future<void> main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+
+  await Firebase.initializeApp(
+    options: DefaultFirebaseOptions.currentPlatform,
+  );
+
+  final FirebaseDatabase rtdb = FirebaseDatabase.instance;
+  DatabaseReference ref = rtdb.ref("alrikHe");
+
+
+  final snapshot = await ref.get();
+  if (snapshot.exists) {
+    print(snapshot.value);
+  } else {
+    print('No data available.');
+  }
+
+  /*ref.onValue.listen((DatabaseEvent event) {
+    print("works!!!!");
+
+    final data = event.snapshot.value;
+    final x = data as List<Map<String, dynamic>>;
+    final myMap = x[0].map((key, value) => MapEntry(key, value.toString()));
+  });*/
   runApp(const MyApp());
 }
 

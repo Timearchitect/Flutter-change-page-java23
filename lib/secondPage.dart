@@ -1,7 +1,11 @@
+import 'dart:convert';
+
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'main.dart';
-import 'package:flutter_app_icons/flutter_app_icons.dart';
+import 'package:http/http.dart' as http;
 
 class SecondPage extends StatefulWidget {
   const SecondPage({super.key, required this.title});
@@ -24,6 +28,28 @@ class SecondPage extends StatefulWidget {
 class _SecondPageState extends State<SecondPage> {
   int _counter = 0;
 
+  Future<String> fetchJokes() async {
+    //final response = await http.get(Uri.parse('https://cors-anywhere.herokuapp.com/https://italian-jokes.vercel.app/api/jokes'));
+    final response =
+        await http.get(Uri.parse('https://italian-jokes.vercel.app/api/jokes'));
+    if (response.statusCode == 200) {
+      return json.decode(response.body);
+    } else {
+      throw Exception('Failed to load jokes');
+    }
+  }
+
+  Future<Map<String, dynamic>> fetchJoke() async {
+    //    final response = await http.get(Uri.parse('https://italian-jokes.vercel.app/api/jokes'));
+    final response = await http
+        .get(Uri.parse('https://official-joke-api.appspot.com/random_joke'));
+    if (response.statusCode == 200) {
+      return json.decode(response.body);
+    } else {
+      throw Exception('Failed to load joke');
+    }
+  }
+
   void _incrementCounter() {
     setState(() {
       // This call to setState tells the Flutter framework that something has
@@ -37,7 +63,8 @@ class _SecondPageState extends State<SecondPage> {
 
   @override
   Widget build(BuildContext context) {
-    final _flutterAppIconsPlugin = FlutterAppIcons();
+    final FirebaseDatabase rtdb = FirebaseDatabase.instance;
+    DatabaseReference ref = rtdb.ref("alrikHe");
     // This method is rerun every time setState is called, for instance as done
     // by the _incrementCounter method above.
     //
@@ -59,49 +86,95 @@ class _SecondPageState extends State<SecondPage> {
       body: Center(
         // Center is a layout widget. It takes a single child and positions it
         // in the middle of the parent.
-        child: Row( mainAxisAlignment: MainAxisAlignment.center,
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.center,
           children: [
             SingleChildScrollView(
-              child: Column(  children: [
-                Text("hejsan"),
-                FilledButton(onPressed: null, child: Text("click here")),
-                FilledButton(onPressed: null, child: Text("click here")),
-                FilledButton(onPressed: null, child: Text("click here")),
-                FilledButton(onPressed: null, child: Text("click here")),
-                FilledButton(onPressed: null, child: Text("click here")),
-                FilledButton(onPressed: null, child: Text("click here")),
-                FilledButton(onPressed: null, child: Text("click here")),
-                FilledButton(onPressed: null, child: Text("click here")),
-                FilledButton(onPressed: null, child: Text("click here")),
-                FilledButton(onPressed: null, child: Text("click here")),
-                FilledButton(onPressed: null, child: Text("click here")),
-                FilledButton(onPressed: null, child: Text("click here")),
-                FilledButton(onPressed: null, child: Text("click here")),
-                FilledButton(onPressed: null, child: Text("click here")),
-                FilledButton(onPressed: null, child: Text("click here")),
-                FilledButton(onPressed: null, child: Text("click here")),
-                FilledButton(onPressed: null, child: Text("click here")),
-                FilledButton(onPressed: null, child: Text("click here")),
-                FilledButton(onPressed: null, child: Text("click here")),
-                FilledButton(onPressed: null, child: Text("click here")),
-                FilledButton(onPressed: null, child: Text("click here")),
-                FilledButton(onPressed: null, child: Text("click here")),
-                FilledButton(onPressed: null, child: Text("click here")),
-                FilledButton(onPressed: null, child: Text("click here")),
-                FilledButton(onPressed: null, child: Text("click here")),
-                FilledButton(onPressed: null, child: Text("click here")),
-                FilledButton(onPressed: null, child: Text("click here")),
-                FilledButton(onPressed: null, child: Text("click here")),
-                FilledButton(onPressed: null, child: Text("click here")),
-                FilledButton(onPressed: null, child: Text("click here")),
-                FilledButton(onPressed: null, child: Text("click here")),
-                FilledButton(onPressed: null, child: Text("click here")),
-                FilledButton(onPressed: null, child: Text("click here")),
-                FilledButton(onPressed: null, child: Text("click here")),
-                FilledButton(onPressed: null, child: Text("click here")),
-                FilledButton(onPressed: null, child: Text("click here")),
-              
-              ],),
+              child: Column(
+                children: [
+                  FutureBuilder<String>(
+                      future: fetchJokes(),
+                      builder: (context, snapshot) {
+                        if (snapshot.connectionState ==
+                            ConnectionState.waiting) {
+                          return CircularProgressIndicator(); // Loading spinner
+                        } else if (snapshot.hasError) {
+                          return Text('Error: ${snapshot.error}');
+                        } else if (snapshot.hasData) {
+                          return Text('Joke: ${snapshot.data}');
+                        }
+                        return Text('No data');
+                      }),
+                  Text("hejsan"),
+                  FutureBuilder<Map<String, dynamic>>(
+                    future: fetchJoke(),
+                    builder: (context, snapshot) {
+                      if (snapshot.connectionState == ConnectionState.waiting) {
+                        return CircularProgressIndicator(); // Show loading spinner while waiting
+                      } else if (snapshot.hasError) {
+                        return Text('Error: ${snapshot.error}');
+                      } else if (snapshot.hasData) {
+                        // Display the joke data when available
+                        return Column(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            Text(
+                              'Joke: ${snapshot.data!['setup']}',
+                              style: TextStyle(fontSize: 18),
+                              textAlign: TextAlign.center,
+                            ),
+                            SizedBox(height: 10),
+                            Text(
+                              'Punchline: ${snapshot.data!['punchline']}',
+                              style: TextStyle(
+                                  fontSize: 18, fontWeight: FontWeight.bold),
+                              textAlign: TextAlign.center,
+                            ),
+                          ],
+                        );
+                      } else {
+                        return Text('No data available');
+                      }
+                    },
+                  ),
+                  stuff(),
+                  stuff2(),
+                  FilledButton(onPressed: null, child: Text("click here")),
+                  FilledButton(onPressed: null, child: Text("click here")),
+                  FilledButton(onPressed: null, child: Text("click here")),
+                  FilledButton(onPressed: null, child: Text("click here")),
+                  FilledButton(onPressed: null, child: Text("click here")),
+                  FilledButton(onPressed: null, child: Text("click here")),
+                  FilledButton(onPressed: null, child: Text("click here")),
+                  FilledButton(onPressed: null, child: Text("click here")),
+                  FilledButton(onPressed: null, child: Text("click here")),
+                  FilledButton(onPressed: null, child: Text("click here")),
+                  FilledButton(onPressed: null, child: Text("click here")),
+                  FilledButton(onPressed: null, child: Text("click here")),
+                  FilledButton(onPressed: null, child: Text("click here")),
+                  FilledButton(onPressed: null, child: Text("click here")),
+                  FilledButton(onPressed: null, child: Text("click here")),
+                  FilledButton(onPressed: null, child: Text("click here")),
+                  FilledButton(onPressed: null, child: Text("click here")),
+                  FilledButton(onPressed: null, child: Text("click here")),
+                  FilledButton(onPressed: null, child: Text("click here")),
+                  FilledButton(onPressed: null, child: Text("click here")),
+                  FilledButton(onPressed: null, child: Text("click here")),
+                  FilledButton(onPressed: null, child: Text("click here")),
+                  FilledButton(onPressed: null, child: Text("click here")),
+                  FilledButton(onPressed: null, child: Text("click here")),
+                  FilledButton(onPressed: null, child: Text("click here")),
+                  FilledButton(onPressed: null, child: Text("click here")),
+                  FilledButton(onPressed: null, child: Text("click here")),
+                  FilledButton(onPressed: null, child: Text("click here")),
+                  FilledButton(onPressed: null, child: Text("click here")),
+                  FilledButton(onPressed: null, child: Text("click here")),
+                  FilledButton(onPressed: null, child: Text("click here")),
+                  FilledButton(onPressed: null, child: Text("click here")),
+                  FilledButton(onPressed: null, child: Text("click here")),
+                  FilledButton(onPressed: null, child: Text("click here")),
+                ],
+              ),
             ),
             Column(
               // Column is also a layout widget. It takes a list of children and
@@ -117,8 +190,9 @@ class _SecondPageState extends State<SecondPage> {
               // TRY THIS: Invoke "debug painting" (choose the "Toggle Debug Paint"
               // action in the IDE, or press "p" in the console), to see the
               // wireframe for each widget.
-              mainAxisAlignment:
-                  (age >= 18) ? MainAxisAlignment.center : MainAxisAlignment.start,
+              mainAxisAlignment: (age >= 18)
+                  ? MainAxisAlignment.center
+                  : MainAxisAlignment.start,
               children: <Widget>[
                 const BackButton(),
                 const Text(
@@ -132,8 +206,8 @@ class _SecondPageState extends State<SecondPage> {
                       'https://flutter.github.io/assets-for-api-docs/assets/widgets/owl.jpg'),
                 ),
                 FilledButton.icon(
-                  icon: Icon(Icons.add_circle),
-                    onPressed: () => {_flutterAppIconsPlugin.setIcon( icon: "favicon.png")},
+                    icon: Icon(Icons.add_circle),
+                    onPressed: () => {},
                     label: Text("SetIcon")),
                 FilledButton(
                     onPressed: () => {
@@ -160,5 +234,59 @@ class _SecondPageState extends State<SecondPage> {
         child: const Icon(Icons.add),
       ), // This trailing comma makes auto-formatting nicer for build methods.
     );
+  }
+
+  stuff() {
+    FirebaseDatabase rtdb = FirebaseDatabase.instance;
+    DatabaseReference ref= rtdb.ref("alrikHe");
+    DataSnapshot snapshot;
+    return FilledButton(
+        onPressed: () async => {
+
+              snapshot = await ref.get(),
+              if (snapshot.exists)
+                {
+                  print(snapshot.value),
+                }
+              else
+                {
+                  print('No data available.'),
+                }
+            },
+        child: Text("FUNKTION"));
+  }
+
+  stuff2() {
+    var db = FirebaseFirestore.instance;
+    var ref= db.collection("users");
+    return FilledButton(
+
+
+
+        onPressed: () async => {
+              await ref.get().then((event) {
+                for (var doc in event.docs) {
+                  print("${doc.id} => ${doc.data()}");
+                }
+              }),
+            },
+        child: Text("FUNKTION firestore"));
+  }
+}
+
+//stful
+//stless
+
+class AlriksWidget extends StatefulWidget {
+  const AlriksWidget({super.key});
+
+  @override
+  State<AlriksWidget> createState() => _AlriksWidgetState();
+}
+
+class _AlriksWidgetState extends State<AlriksWidget> {
+  @override
+  Widget build(BuildContext context) {
+    return const Placeholder();
   }
 }
